@@ -12,7 +12,7 @@ export const ProjectListScreen = () => {
     name: '',
     personId: ''
   })
-  const debounceParams = useDebounce(params, 2000)
+  const debounceParams = useDebounce(params, 200)
   const [users, setUsers] = useState([])
   const [list, setList] = useState([])
 
@@ -28,8 +28,10 @@ export const ProjectListScreen = () => {
     })
   }, [debounceParams])
 
-  return <>
-    <SearchPanel users={users} params={params} setParams={setParams} />
-    <List users={users} list={list} />
-  </>
+  return (
+    <>
+      <SearchPanel users={users} params={params} setParams={setParams} />
+      <List users={users} list={list} />
+    </>
+  )
 }
