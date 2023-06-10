@@ -6,13 +6,8 @@ import qs from 'qs'
 import { clearObject, useDebounce, useMount } from 'utils'
 import { useHttp } from 'utils/http'
 
-const apiUrl = process.env.REACT_APP_API_URL
-
 export const ProjectListScreen = () => {
-  const [params, setParams] = useState({
-    name: '',
-    personId: ''
-  })
+  const [params, setParams] = useState({ name: '', personId: '' })
   const debounceParams = useDebounce(params, 200)
   const [users, setUsers] = useState([])
   const [list, setList] = useState([])
