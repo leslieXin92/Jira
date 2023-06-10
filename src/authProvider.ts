@@ -4,16 +4,13 @@ const localStorageKey = '__auth_provider_token__'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
-// 获取token
 export const getToken = () => window.localStorage.getItem(localStorageKey)
 
-// 获取用户信息
 export const handleUserResponse = ({ user }: { user: User }) => {
   window.localStorage.setItem(localStorageKey, user.token || '')
   return user
 }
 
-// 注册
 export const register = async (params: { username: string; password: string }) => {
   const res = await fetch(`${apiUrl}/register`, {
     method: 'POST',
@@ -21,9 +18,9 @@ export const register = async (params: { username: string; password: string }) =
     body: JSON.stringify(params)
   })
   if (res.ok) return handleUserResponse(await res.json())
+  return Promise.reject(params)
 }
 
-// 登录
 export const login = async (params: { username: string; password: string }) => {
   const res = await fetch(`${apiUrl}/login`, {
     method: 'POST',
@@ -31,7 +28,7 @@ export const login = async (params: { username: string; password: string }) => {
     body: JSON.stringify(params)
   })
   if (res.ok) return handleUserResponse(await res.json())
+  return Promise.reject(params)
 }
 
-// 登出
 export const logout = async () => window.localStorage.removeItem(localStorageKey)
