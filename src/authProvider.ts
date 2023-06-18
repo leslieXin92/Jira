@@ -18,7 +18,7 @@ export const register = async (params: { username: string; password: string }) =
     body: JSON.stringify(params)
   })
   if (res.ok) return handleUserResponse(await res.json())
-  return Promise.reject(params)
+  return Promise.reject(await res.json())
 }
 
 export const login = async (params: { username: string; password: string }) => {
@@ -28,7 +28,7 @@ export const login = async (params: { username: string; password: string }) => {
     body: JSON.stringify(params)
   })
   if (res.ok) return handleUserResponse(await res.json())
-  return Promise.reject(params)
+  return Promise.reject(await res.json())
 }
 
 export const logout = async () => window.localStorage.removeItem(localStorageKey)
