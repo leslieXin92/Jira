@@ -4,12 +4,12 @@ import { Form, Input, Button } from 'antd'
 import { LongButton } from 'unauthenticatedApp'
 import { useAsync } from 'utils/useAsync'
 
-export const LoginScreen = (props: { onError: (error: Error) => void }) => {
+export const LoginScreen = ({ onError }: { onError: (error: Error) => void }) => {
   const { login } = useAuth()
   const { run, isLoading } = useAsync(undefined, { throwOnError: true })
 
   const handleLogin = (values: { username: string; password: string }) => {
-    run(login(values)).catch(props.onError)
+    run(login(values)).catch(onError)
   }
 
   return (

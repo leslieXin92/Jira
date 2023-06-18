@@ -5,13 +5,13 @@ import { LongButton } from 'unauthenticatedApp'
 import { on } from 'process'
 import { useAsync } from 'utils/useAsync'
 
-export const RegisterScreen = (props: { onError: (error: Error) => void }) => {
+export const RegisterScreen = ({ onError }: { onError: (error: Error) => void }) => {
   const { register } = useAuth()
   const { run, isLoading } = useAsync(undefined, { throwOnError: true })
 
   const handleRegister = (values: { username: string; password: string; confirmPassword: string }) => {
-    if (values.confirmPassword !== values.password) return props.onError(new Error('请确认两次输入的密码相同'))
-    run(register(values)).catch(props.onError)
+    if (values.confirmPassword !== values.password) return onError(new Error('请确认两次输入的密码相同'))
+    run(register(values)).catch(onError)
   }
 
   return (
