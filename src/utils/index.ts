@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value)
 
-export const clearObject = (object: object) => {
+export const isVoid = (value: unknown) => value === undefined || value === null || value === ''
+
+export const clearObject = (object: Record<string, unknown>) => {
   const res = { ...object }
   Object.keys(res).forEach(key => {
-    // @ts-ignore
     const value = res[key]
-    // @ts-ignore
-    if (isFalsy(value)) delete res[key]
+    if (isVoid(value)) delete res[key]
   })
   return res
 }
