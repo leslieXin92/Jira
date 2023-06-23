@@ -11,14 +11,14 @@ import { useProjectsSearchParams } from './utils'
 export const ProjectListScreen = () => {
   const [params, setParams] = useProjectsSearchParams()
   const { data: users } = useUsers()
-  const { isLoading, error, data: list } = useProjects(useDebounce(params, 200))
+  const { isLoading, error, data: list, retry } = useProjects(useDebounce(params, 200))
 
   return (
     <Container>
       <h1>项目列表</h1>
       <SearchPanel users={users || []} params={params} setParams={setParams} />
       {error && <Typography.Text type='danger'>{error?.message}</Typography.Text>}
-      <List loading={isLoading} users={users || []} dataSource={list || []} />
+      <List loading={isLoading} users={users || []} dataSource={list || []} refresh={retry} />
     </Container>
   )
 }

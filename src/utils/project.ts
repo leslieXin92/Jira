@@ -8,9 +8,31 @@ export const useProjects = (params?: Partial<Project>) => {
   const client = useHttp()
   const { run, ...rest } = useAsync<Project[]>()
 
+  const fetchProjects = () => client('projects', { params: cleanObject(params || {}) })
+
   useEffect(() => {
-    run(client('projects', { params: cleanObject(params || {}) }))
+    run(fetchProjects(), { retry: fetchProjects })
   }, [params])
 
   return rest
+}
+
+export const useEditProject = () => {
+  const client = useHttp()
+  const { run, ...asyncRes } = useAsync()
+  const mutate = (params: Partial<Project>) => {
+    return run(client(`projects/${params.id}`, { params, method: 'PATCH' }))
+  }
+
+  return { mutate, ...asyncRes }
+}
+
+export const useAddProject = () => {
+  const client = useHttp()
+  const { run, ...asyncRes } = useAsync()
+  const mutate = (params: Partial<Project>) => {
+    return run(client(`projects/${params.id}`, { params, method: 'POST' }))
+  }
+
+  return { mutate, ...asyncRes }
 }
