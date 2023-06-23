@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useMountedRef } from 'utils'
 
 interface State<T> {
@@ -27,37 +27,46 @@ export const useAsync = <T>(initialState?: State<T>, initialConfig?: typeof defa
 
   const config = { ...defaultConfig, ...initialConfig }
 
-  const setData = (data: T) =>
-    setState({
-      data,
-      status: 'success',
-      error: null
-    })
+  const setData = useCallback(
+    (data: T) =>
+      setState({
+        data,
+        status: 'success',
+        error: null
+      }),
+    []
+  )
 
-  const setError = (error: Error) =>
-    setState({
-      error,
-      status: 'error',
-      data: null
-    })
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        error,
+        status: 'error',
+        data: null
+      }),
+    []
+  )
 
-  const run = (promise: Promise<T>, runConfig?: { retry: () => Promise<T> }) => {
-    if (!promise || !promise.then) throw new Error('请传入 Promise 类型数据')
+  const run = useCallback(
+    (promise: Promise<T>, runConfig?: { retry: () => Promise<T> }) => {
+      if (!promise || !promise.then) throw new Error('请传入 Promise 类型数据')
 
-    setState({ ...state, status: 'loading' })
-    setRetry(() => () => runConfig?.retry && run(runConfig.retry(), runConfig))
+      setState(preState => ({ ...preState, status: 'loading' }))
+      setRetry(() => () => runConfig?.retry && run(runConfig.retry(), runConfig))
 
-    return promise
-      .then(data => {
-        mountedRef.current && setData(data)
-        return data
-      })
-      .catch(error => {
-        setError(error)
-        if (config.throwOnError) return Promise.reject(error)
-        return error
-      })
-  }
+      return promise
+        .then(data => {
+          mountedRef.current && setData(data)
+          return data
+        })
+        .catch(error => {
+          setError(error)
+          if (config.throwOnError) return Promise.reject(error)
+          return error
+        })
+    },
+    [mountedRef, setData, setError, config.throwOnError]
+  )
 
   return {
     isIdle: state.status === 'idle',
