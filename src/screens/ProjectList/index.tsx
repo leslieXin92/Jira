@@ -7,9 +7,10 @@ import styled from '@emotion/styled'
 import { Typography } from 'antd'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
+import { useUrlQueryParams } from 'utils/url'
 
 export const ProjectListScreen = () => {
-  const [params, setParams] = useState({ name: '', personId: '' })
+  const [params, setParams] = useUrlQueryParams(['name', 'personId'])
 
   const debounceParams = useDebounce(params, 200)
   const { data: users } = useUsers()

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useAsync } from './useAsync'
 import { Project } from 'screens/ProjectList/List'
-import { clearObject } from 'utils'
+import { cleanObject } from 'utils'
 import { useHttp } from './http'
 
 export const useProjects = (params?: Partial<Project>) => {
@@ -9,7 +9,7 @@ export const useProjects = (params?: Partial<Project>) => {
   const { run, ...rest } = useAsync<Project[]>()
 
   useEffect(() => {
-    run(client('projects', { params: clearObject(params || {}) }))
+    run(client('projects', { params: cleanObject(params || {}) }))
   }, [params])
 
   return rest
