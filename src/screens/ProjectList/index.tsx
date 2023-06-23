@@ -1,20 +1,17 @@
 import React from 'react'
 import { SearchPanel } from './SearchPanel'
 import { List } from './List'
-import { useState } from 'react'
 import { useDebounce } from 'utils'
 import styled from '@emotion/styled'
 import { Typography } from 'antd'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
-import { useUrlQueryParams } from 'utils/url'
+import { useProjectsSearchParams } from './utils'
 
 export const ProjectListScreen = () => {
-  const [params, setParams] = useUrlQueryParams(['name', 'personId'])
-
-  const debounceParams = useDebounce(params, 200)
+  const [params, setParams] = useProjectsSearchParams()
   const { data: users } = useUsers()
-  const { isLoading, error, data: list } = useProjects(debounceParams)
+  const { isLoading, error, data: list } = useProjects(useDebounce(params, 200))
 
   return (
     <Container>
