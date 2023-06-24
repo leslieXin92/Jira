@@ -19,11 +19,11 @@ export interface Project {
 
 interface ListProps extends TableProps<Project> {
   users: User[]
-  setProjectDrawerOpen: (isOpen: boolean) => void
+  projectButton: JSX.Element
   refresh?: () => void
 }
 
-export const List = ({ users, setProjectDrawerOpen, ...props }: ListProps) => {
+export const List = ({ users, projectButton, ...props }: ListProps) => {
   useDocumentTitle('项目列表', false)
 
   const { mutate } = useEditProject()
@@ -65,11 +65,7 @@ export const List = ({ users, setProjectDrawerOpen, ...props }: ListProps) => {
             <Dropdown
               overlay={
                 <Menu>
-                  <Menu.Item key='edit'>
-                    <ButtonNoPadding type='link' onClick={() => setProjectDrawerOpen(true)}>
-                      编辑
-                    </ButtonNoPadding>
-                  </Menu.Item>
+                  <Menu.Item key='edit'>{projectButton}</Menu.Item>
                 </Menu>
               }
             >

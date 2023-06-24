@@ -9,7 +9,7 @@ import { useUsers } from 'utils/user'
 import { useProjectsSearchParams } from './utils'
 import { Row } from 'components/lib'
 
-export const ProjectListScreen = (props: { setProjectDrawerOpen: (isOpen: boolean) => void }) => {
+export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
   const [params, setParams] = useProjectsSearchParams()
   const { data: users } = useUsers()
   const { isLoading, error, data: list, retry } = useProjects(useDebounce(params, 200))
@@ -18,7 +18,7 @@ export const ProjectListScreen = (props: { setProjectDrawerOpen: (isOpen: boolea
     <Container>
       <Row between={true}>
         <h1>项目列表</h1>
-        <Button onClick={() => props.setProjectDrawerOpen(true)}>创建项目</Button>
+        {props.projectButton}
       </Row>
       <SearchPanel users={users || []} params={params} setParams={setParams} />
       {error && <Typography.Text type='danger'>{error?.message}</Typography.Text>}
@@ -27,7 +27,7 @@ export const ProjectListScreen = (props: { setProjectDrawerOpen: (isOpen: boolea
         users={users || []}
         dataSource={list || []}
         refresh={retry}
-        setProjectDrawerOpen={props.setProjectDrawerOpen}
+        projectButton={props.projectButton}
       />
     </Container>
   )
