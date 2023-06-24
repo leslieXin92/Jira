@@ -30,15 +30,9 @@ const bootstrapUser = async () => {
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const {
-    run,
-    data: user,
-    setData: setUser,
-    isIdle,
-    isLoading,
-    isError,
-    error
-  } = useAsync<User | null>(undefined, { throwOnError: true })
+  const { run, data: user, setData: setUser, isIdle, isLoading, isError, error } = useAsync<User | null>(undefined, {
+    throwOnError: true
+  })
 
   const register = (form: AuthForm) => auth.register(form).then(setUser)
   const login = (form: AuthForm) => auth.login(form).then(setUser)

@@ -11,7 +11,10 @@ type State<T> = {
   future: T[]
 }
 
-type Action<T> = { type: typeof UNDO | typeof REDO | typeof SET | typeof RESET; newPresent?: T }
+type Action<T> = {
+  type: typeof UNDO | typeof REDO | typeof SET | typeof RESET
+  newPresent?: T
+}
 
 const undoReducer = <T>(state: State<T>, action: Action<T>) => {
   const { past, present, future } = state
