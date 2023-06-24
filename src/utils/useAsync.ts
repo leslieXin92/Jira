@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useReducer, useState } from 'react'
 import { useMountedRef } from 'utils'
 
 interface State<T> {
@@ -17,46 +17,52 @@ const defaultConfig = {
   throwOnError: false
 }
 
+const useSafeDispatch = <T>(dispath: (...args: T[]) => void) => {
+  const mountedRef = useMountedRef()
+
+  return useCallback((...args: T[]) => (mountedRef.current ? dispath(...args) : void 0), [dispath, mountedRef])
+}
+
 export const useAsync = <T>(initialState?: State<T>, initialConfig?: typeof defaultConfig) => {
-  const [state, setState] = useState<State<T>>({
+  const [state, dispath] = useReducer((state: State<T>, action: Partial<State<T>>) => ({ ...state, ...action }), {
     ...defaultInitialState,
     ...initialState
   })
   const [retry, setRetry] = useState(() => () => {})
-  const mountedRef = useMountedRef()
+  const safeDispath = useSafeDispatch(dispath)
 
   const config = { ...defaultConfig, ...initialConfig }
 
   const setData = useCallback(
     (data: T) =>
-      setState({
+      safeDispath({
         data,
         status: 'success',
         error: null
       }),
-    []
+    [safeDispath]
   )
 
   const setError = useCallback(
     (error: Error) =>
-      setState({
+      safeDispath({
         error,
         status: 'error',
         data: null
       }),
-    []
+    [safeDispath]
   )
 
   const run = useCallback(
     (promise: Promise<T>, runConfig?: { retry: () => Promise<T> }) => {
       if (!promise || !promise.then) throw new Error('请传入 Promise 类型数据')
 
-      setState(preState => ({ ...preState, status: 'loading' }))
+      safeDispath({ status: 'loading' })
       setRetry(() => () => runConfig?.retry && run(runConfig.retry(), runConfig))
 
       return promise
         .then(data => {
-          mountedRef.current && setData(data)
+          setData(data)
           return data
         })
         .catch(error => {
@@ -65,7 +71,7 @@ export const useAsync = <T>(initialState?: State<T>, initialConfig?: typeof defa
           return error
         })
     },
-    [mountedRef, setData, setError, config.throwOnError]
+    [safeDispath, setData, setError, config.throwOnError]
   )
 
   return {
