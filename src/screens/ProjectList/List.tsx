@@ -1,11 +1,12 @@
 import React from 'react'
 import { User } from './SearchPanel'
-import { Table, TableProps } from 'antd'
+import { Dropdown, Menu, Table, TableProps } from 'antd'
 import dayjs from 'dayjs'
 import { useDocumentTitle } from 'utils'
 import { Link } from 'react-router-dom'
 import { Pin } from 'components/Pin'
 import { useEditProject } from 'utils/project'
+import { ButtonNoPadding } from 'components/lib'
 
 export interface Project {
   id: number
@@ -18,10 +19,11 @@ export interface Project {
 
 interface ListProps extends TableProps<Project> {
   users: User[]
+  setProjectDrawerOpen: (isOpen: boolean) => void
   refresh?: () => void
 }
 
-export const List = ({ users, ...props }: ListProps) => {
+export const List = ({ users, setProjectDrawerOpen, ...props }: ListProps) => {
   useDocumentTitle('项目列表', false)
 
   const { mutate } = useEditProject()
@@ -56,6 +58,24 @@ export const List = ({ users, ...props }: ListProps) => {
           title: '创建时间',
           dataIndex: 'created',
           render: value => dayjs(value).format('YYYY-MM-DD') || '无'
+        },
+        {
+          title: '操作',
+          render: () => (
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item key='edit'>
+                    <ButtonNoPadding type='link' onClick={() => setProjectDrawerOpen(true)}>
+                      编辑
+                    </ButtonNoPadding>
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <ButtonNoPadding type={'link'}>...</ButtonNoPadding>
+            </Dropdown>
+          )
         }
       ]}
       {...props}

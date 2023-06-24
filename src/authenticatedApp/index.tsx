@@ -1,62 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useAuth } from 'context/authContext'
 import { ProjectListScreen } from 'screens/ProjectList'
 import { ProjectScreen } from 'screens/Project'
 import styled from '@emotion/styled'
-import { Row } from 'components/lib'
+import { ButtonNoPadding, Row } from 'components/lib'
 import { ReactComponent as SoftwareLogo } from 'assets/software-logo.svg'
 import { Dropdown, Menu, Button } from 'antd'
 import { Navigate, Route, Routes } from 'react-router'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { resetRoute } from 'utils'
+import { ProjectDrawer } from 'screens/ProjectList/ProjectDrawer'
+import { ProjectPopover } from 'components/ProjectPopover'
 
 export const AuthenticatedApp = () => {
+  const [projectDrawerOpen, setProjectDrawerOpen] = useState(false)
+
   return (
     <Container>
-      <PageHeader />
+      <PageHeader setProjectDrawerOpen={setProjectDrawerOpen} />
 
       <Main>
         <Router>
           <Routes>
             <Route path='/' element={<Navigate to='/projects' />} />
-            <Route path='/projects' element={<ProjectListScreen />} />
+            <Route path='/projects' element={<ProjectListScreen setProjectDrawerOpen={setProjectDrawerOpen} />} />
             <Route path='/projects/:projectId/*' element={<ProjectScreen />} />
           </Routes>
         </Router>
       </Main>
+
+      <ProjectDrawer projectDrawerOpen={projectDrawerOpen} onClose={() => setProjectDrawerOpen(false)} />
     </Container>
   )
 }
 
-const PageHeader = () => {
-  const { logout, user } = useAuth()
-
+const PageHeader = (props: { setProjectDrawerOpen: (isOpen: boolean) => void }) => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
-        <Button type='link' onClick={resetRoute}>
+        <ButtonNoPadding type='link' onClick={resetRoute}>
           <SoftwareLogo width='18rem' color='rgb(38, 132, 255)' />
-        </Button>
-        <h2>项目</h2>
-        <h2>用户</h2>
+        </ButtonNoPadding>
+        <ProjectPopover setProjectDrawerOpen={props.setProjectDrawerOpen} />
+        <span>用户</span>
       </HeaderLeft>
 
       <HeaderRight>
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item key='logout'>
-                <Button type='link' onClick={logout}>
-                  登出
-                </Button>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Button type='link'>Hi, {user?.name}</Button>
-        </Dropdown>
+        <User />
       </HeaderRight>
     </Header>
+  )
+}
+
+const User = () => {
+  const { logout, user } = useAuth()
+
+  return (
+    <Dropdown
+      overlay={
+        <Menu>
+          <Menu.Item key='logout'>
+            <Button type='link' onClick={logout}>
+              登出
+            </Button>
+          </Menu.Item>
+        </Menu>
+      }
+    >
+      <Button type='link'>Hi, {user?.name}</Button>
+    </Dropdown>
   )
 }
 
