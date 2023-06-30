@@ -7,28 +7,27 @@ import { Button, Typography } from 'antd'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useProjectsSearchParams } from './utils'
-import { Row } from 'components/lib'
+import { ButtonNoPadding, Row } from 'components/lib'
+import { useDispatch } from 'react-redux'
+import { setProjectDrawerOpen } from './ProjectList.slice'
 
-export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
+export const ProjectListScreen = () => {
   const [params, setParams] = useProjectsSearchParams()
   const { data: users } = useUsers()
+  const dispatch = useDispatch()
   const { isLoading, error, data: list, retry } = useProjects(useDebounce(params, 200))
 
   return (
     <Container>
       <Row between={true}>
         <h1>项目列表</h1>
-        {props.projectButton}
+        <ButtonNoPadding type='link' onClick={() => dispatch(setProjectDrawerOpen())}>
+          创建项目
+        </ButtonNoPadding>
       </Row>
       <SearchPanel users={users || []} params={params} setParams={setParams} />
       {error && <Typography.Text type='danger'>{error?.message}</Typography.Text>}
-      <List
-        loading={isLoading}
-        users={users || []}
-        dataSource={list || []}
-        refresh={retry}
-        projectButton={props.projectButton}
-      />
+      <List loading={isLoading} users={users || []} dataSource={list || []} refresh={retry} />
     </Container>
   )
 }

@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import { Pin } from 'components/Pin'
 import { useEditProject } from 'utils/project'
 import { ButtonNoPadding } from 'components/lib'
+import { useDispatch } from 'react-redux'
+import { setProjectDrawerOpen } from './ProjectList.slice'
 
 export interface Project {
   id: number
@@ -19,14 +21,15 @@ export interface Project {
 
 interface ListProps extends TableProps<Project> {
   users: User[]
-  projectButton: JSX.Element
   refresh?: () => void
 }
 
-export const List = ({ users, projectButton, ...props }: ListProps) => {
+export const List = ({ users, ...props }: ListProps) => {
   useDocumentTitle('项目列表', false)
 
   const { mutate } = useEditProject()
+
+  const dispatch = useDispatch()
 
   const changePin = (id: number) => (pin: boolean) => mutate({ id, pin }).then(props.refresh)
 
@@ -65,7 +68,11 @@ export const List = ({ users, projectButton, ...props }: ListProps) => {
             <Dropdown
               overlay={
                 <Menu>
-                  <Menu.Item key='edit'>{projectButton}</Menu.Item>
+                  <Menu.Item key='edit'>
+                    <ButtonNoPadding type='link' onClick={() => dispatch(setProjectDrawerOpen())}>
+                      编辑
+                    </ButtonNoPadding>
+                  </Menu.Item>
                 </Menu>
               }
             >
