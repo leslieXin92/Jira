@@ -1,11 +1,13 @@
-import { Button, Drawer } from 'antd'
 import React from 'react'
+import { Button, Drawer } from 'antd'
+import { useProjectDrawer } from './utils'
 
-export const ProjectDrawer = (props: { projectDrawerOpen: boolean; onClose: () => void }) => {
+export const ProjectDrawer = () => {
+  const { projectDrawerOpen, open, close } = useProjectDrawer()
   return (
-    <Drawer width='100%' visible={props.projectDrawerOpen} onClose={props.onClose}>
+    <Drawer width='100%' visible={projectDrawerOpen} onClose={close}>
       <h1>Project Drawer</h1>
-      <Button onClick={props.onClose}>close</Button>
+      <Button onClick={close}>close</Button>
     </Drawer>
   )
 }

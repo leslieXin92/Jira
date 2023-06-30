@@ -13,52 +13,32 @@ import { ProjectDrawer } from 'screens/ProjectList/ProjectDrawer'
 import { ProjectPopover } from 'components/ProjectPopover'
 
 export const AuthenticatedApp = () => {
-  const [projectDrawerOpen, setProjectDrawerOpen] = useState(false)
-
   return (
     <Container>
-      <PageHeader
-        projectButton={
-          <ButtonNoPadding type='link' onClick={() => setProjectDrawerOpen(true)}>
-            创建项目
-          </ButtonNoPadding>
-        }
-      />
+      <Router>
+        <PageHeader />
 
-      <Main>
-        <Router>
+        <Main>
           <Routes>
             <Route path='/' element={<Navigate to='/projects' />} />
-            <Route
-              path='/projects'
-              element={
-                <ProjectListScreen
-                  projectButton={
-                    <ButtonNoPadding type='link' onClick={() => setProjectDrawerOpen(true)}>
-                      创建项目
-                    </ButtonNoPadding>
-                  }
-                />
-              }
-            />
+            <Route path='/projects' element={<ProjectListScreen />} />
             <Route path='/projects/:projectId/*' element={<ProjectScreen />} />
           </Routes>
-        </Router>
-      </Main>
-
-      <ProjectDrawer projectDrawerOpen={projectDrawerOpen} onClose={() => setProjectDrawerOpen(false)} />
+        </Main>
+        <ProjectDrawer />
+      </Router>
     </Container>
   )
 }
 
-const PageHeader = (props: { projectButton: JSX.Element }) => {
+const PageHeader = () => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
         <ButtonNoPadding type='link' onClick={resetRoute}>
           <SoftwareLogo width='18rem' color='rgb(38, 132, 255)' />
         </ButtonNoPadding>
-        <ProjectPopover projectButton={props.projectButton} />
+        <ProjectPopover />
         <span>用户</span>
       </HeaderLeft>
 
