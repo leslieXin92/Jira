@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Button, Drawer, Form, Input, Spin } from 'antd'
-import { useProjectDrawer } from './utils'
+import { useProjectDrawer, useProjectQueryKey } from './utils'
 import { UserSelect } from 'components/UserSelect'
 import { useAddProject, useEditProject } from 'utils/project'
 import { ErrorBox } from 'components/lib'
@@ -9,7 +9,7 @@ import styled from '@emotion/styled'
 export const ProjectDrawer = () => {
   const { projectDrawerOpen, close, editingProject, isLoading } = useProjectDrawer()
   const useMutateProject = editingProject ? useEditProject : useAddProject
-  const { mutateAsync, isLoading: mutateLoading, error } = useMutateProject()
+  const { mutateAsync, isLoading: mutateLoading, error } = useMutateProject(useProjectQueryKey())
 
   const title = editingProject ? '编辑项目' : '创建项目'
   const [form] = Form.useForm()

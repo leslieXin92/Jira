@@ -29,3 +29,8 @@ export const useProjectDrawer = () => {
     isLoading
   }
 }
+
+export const useProjectQueryKey = () => {
+  const [params] = useProjectsSearchParams()
+  return ['projects', params]
+}
