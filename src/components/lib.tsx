@@ -3,6 +3,26 @@ import styled from '@emotion/styled'
 import { Button, Spin, Typography } from 'antd'
 import { DevTools } from 'jira-dev-tool'
 
+const isError = (value: any): value is Error => value?.message
+
+export const FullPageLoading = () => (
+  <FullPage>
+    <Spin size='large'></Spin>
+  </FullPage>
+)
+
+export const FullPageErrorFallback = ({ error }: { error: Error | null }) => (
+  <FullPage>
+    <DevTools />
+    <ErrorBox error={error} />
+  </FullPage>
+)
+
+export const ErrorBox = ({ error }: { error: unknown }) => {
+  if (isError(error)) return <Typography.Text type='danger'>{error?.message}</Typography.Text>
+  return null
+}
+
 export const Row = styled.div<{
   gap?: number | boolean
   between?: boolean
@@ -29,19 +49,6 @@ const FullPage = styled.div`
   align-items: center;
   height: 100vh;
 `
-
-export const FullPageLoading = () => (
-  <FullPage>
-    <Spin size='large'></Spin>
-  </FullPage>
-)
-
-export const FullPageErrorFallback = ({ error }: { error: Error | null }) => (
-  <FullPage>
-    <Typography.Text type='danger'>{error?.message}</Typography.Text>
-    <DevTools />
-  </FullPage>
-)
 
 export const ButtonNoPadding = styled(Button)`
   padding: 0;

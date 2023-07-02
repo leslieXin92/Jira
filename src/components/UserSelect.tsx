@@ -5,7 +5,7 @@ import { IdSelect } from './IdSelect'
 export const UserSelect = (props: React.ComponentProps<typeof IdSelect>) => {
   const { data: users } = useUsers()
 
-  console.log('UserSelect', props)
+  // console.log('UserSelect', props) // TODO
 
   return <IdSelect options={users || []} {...props} />
 }

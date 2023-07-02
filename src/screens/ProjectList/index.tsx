@@ -3,16 +3,15 @@ import { SearchPanel } from './SearchPanel'
 import { List } from './List'
 import { useDebounce } from 'utils'
 import styled from '@emotion/styled'
-import { Button, Typography } from 'antd'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useProjectDrawer, useProjectsSearchParams } from './utils'
-import { ButtonNoPadding, Row } from 'components/lib'
+import { ButtonNoPadding, ErrorBox, Row } from 'components/lib'
 
 export const ProjectListScreen = () => {
   const [params, setParams] = useProjectsSearchParams()
   const { data: users } = useUsers()
-  const { isLoading, error, data: list, retry } = useProjects(useDebounce(params, 200))
+  const { isLoading, error, data: list } = useProjects(useDebounce(params, 200))
   const { open } = useProjectDrawer()
 
   return (
@@ -24,8 +23,8 @@ export const ProjectListScreen = () => {
         </ButtonNoPadding>
       </Row>
       <SearchPanel users={users || []} params={params} setParams={setParams} />
-      {error && <Typography.Text type='danger'>{error?.message}</Typography.Text>}
-      <List loading={isLoading} users={users || []} dataSource={list || []} refresh={retry} />
+      <ErrorBox error={error} />
+      <List loading={isLoading} users={users || []} dataSource={list || []} />
     </Container>
   )
 }

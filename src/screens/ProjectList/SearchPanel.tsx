@@ -19,7 +19,7 @@ interface SearchPanelProps {
 }
 
 export const SearchPanel = ({ params, setParams }: SearchPanelProps) => {
-  console.log('SearchPanel', params.personId)
+  // console.log('SearchPanel', params.personId) // TODO
 
   return (
     <Form layout='inline' style={{ marginBottom: '2rem ' }}>

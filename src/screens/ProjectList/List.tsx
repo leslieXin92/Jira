@@ -27,10 +27,10 @@ export const List = ({ users, ...props }: ListProps) => {
   useDocumentTitle('项目列表', false)
 
   const { mutate } = useEditProject()
+  const { startEdit } = useProjectDrawer()
 
-  const changePin = (id: number) => (pin: boolean) => mutate({ id, pin }).then(props.refresh)
-
-  const { open } = useProjectDrawer()
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin })
+  const editProject = (id: number) => () => startEdit(id)
 
   return (
     <Table
@@ -39,7 +39,7 @@ export const List = ({ users, ...props }: ListProps) => {
         {
           title: <Pin checked={true} disabled={true} />,
           dataIndex: 'pin',
-          render: (value, project) => <Pin checked={value} onCheckedChange={changePin(project.id)} />
+          render: (value, project) => <Pin checked={value} onCheckedChange={pinProject(project.id)} />
         },
         {
           title: '名称',
@@ -63,14 +63,17 @@ export const List = ({ users, ...props }: ListProps) => {
         },
         {
           title: '操作',
-          render: () => (
+          render: (_, project) => (
             <Dropdown
               overlay={
                 <Menu>
                   <Menu.Item key='edit'>
-                    <ButtonNoPadding type={'link'} onClick={open}>
+                    <ButtonNoPadding type={'link'} onClick={editProject(project.id)}>
                       编辑
                     </ButtonNoPadding>
+                  </Menu.Item>
+                  <Menu.Item key='delete'>
+                    <ButtonNoPadding type={'link'}>删除</ButtonNoPadding>
                   </Menu.Item>
                 </Menu>
               }
